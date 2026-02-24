@@ -24,10 +24,10 @@ dvc-project-nidhi/
 
 ## Candidate Information
 
-Name: Nidhi Shishupal
-Email: nidhipshishupal9@gmail.com
-Role Applied: Web Development Intern
-Tech Stack: HTML, CSS, JavaScript, WordPress, PHP
+- **Name:** Nidhi Shishupal  
+- **Email:** nidhipshishupal9@gmail.com  
+- **Role Applied:** Web Development Intern  
+- **Tech Stack:** HTML, CSS, JavaScript, WordPress, PHP
 
 ---
 
