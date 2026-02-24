@@ -148,20 +148,20 @@ const API_KEY = "YOUR_API_KEY_HERE";
 
 ## Estimated Time Spent
 
-Product Card: 3 hours
-WordPress Plugin: 5 hours
-Weather Dashboard: 6 hours
+**Product Card:** 3 hours
+**WordPress Plugin:** 5 hours
+**Weather Dashboard:** 6 hours
 
 ---
 
 ## Technologies Used
 
-HTML5
-CSS3
-Vanilla JavaScript
-WordPress (PHP)
-REST API Integration
-Accessibility (ARIA)
+**HTML5**
+**CSS3**
+**Vanilla JavaScript**
+**WordPress (PHP)**
+**REST API Integration**
+**Accessibility (ARIA)**
 
 ---
 
