@@ -1,0 +1,25 @@
+# API Keys / secrets
+.env
+*.env
+config.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Node (if opened in editor)
+node_modules/
+
+# WordPress local files
+wp-config.php
+debug.log
+
+# VS Code
+.vscode/
+
+# Zip / temp
+*.zip
+*.tmp

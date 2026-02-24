@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Card</title>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --bg: #f3f4f6;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto;
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            max-width: 360px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform .2s;
+        }
+
+        @media (hover:hover) {
+            .card:hover {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* IMAGE */
+        .card img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            background: #e5e7eb;
+        }
+
+        .content {
+            padding: 18px;
+        }
+
+        h2 {
+            margin: 0 0 6px;
+            font-size: 20px;
+            color: var(--text);
+        }
+
+        .desc {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        /* PRICE */
+        .price {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .old {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .new {
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .badge {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* QUANTITY */
+        .qty {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .qty button {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #e5e7eb;
+            font-size: 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .qty span {
+            min-width: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* BUTTON */
+        .add {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .add:hover {
+            opacity: .9;
+        }
+
+        button:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 3px;
+        }
+
+        /* disabled buttons */
+        .qty button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .add:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #111827;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 10px;
+            opacity: 0;
+            transition: all .35s ease;
+            pointer-events: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
+            will-change: transform, opacity;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* DESKTOP */
+        @media(min-width:1024px) {
+            .card {
+                max-width: 700px;
+                display: flex;
+            }
+
+            .card img {
+                width: 50%;
+                height: auto;
+            }
+
+            .content {
+                width: 50%;
+            }
+        }
+
+        @media (min-width:768px) and (max-width:1023px) {
+            .card {
+                max-width: 500px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true">
+        Added to cart successfully!
+    </div>
+
+    <article class="card" aria-labelledby="productTitle">
+
+        <img id="productImg" src="https://picsum.photos/400/300" alt="Wireless Headphones">
+
+        <div class="content">
+            <h2 id="productTitle">Wireless Headphones</h2>
+            <p class="desc">Premium noise-cancelling over-ear headphones with 30hr battery life.</p>
+
+            <div class="price">
+                <span class="old">₹4999</span>
+                <span class="new">₹2999</span>
+                <span class="badge">40% OFF</span>
+            </div>
+
+            <div class="qty">
+                <button type="button" id="minus" aria-label="Decrease quantity" aria-controls="count">-</button>
+                <span id="count" aria-live="polite">1</span>
+                <button type="button" id="plus" aria-label="Increase quantity" aria-controls="count">+</button>
+            </div>
+
+            <button type="button" class="add" id="addBtn">Add to Cart</button>
+        </div>
+
+    </article>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const img = document.getElementById("productImg");
+            img.addEventListener("error", function () {
+                this.src = "https://via.placeholder.com/400x300?text=No+Image";
+            });
+            const minus = document.getElementById("minus");
+            const plus = document.getElementById("plus");
+            const countEl = document.getElementById("count");
+            const addBtn = document.getElementById("addBtn");
+            let toastTimer;
+            let isProcessing = false;
+            let quantity = 1;
+            const toast = document.getElementById("toast");
+            const productName = document.querySelector("h2").textContent;
+            const price = Number(document.querySelector(".new").textContent.replace(/[^\d]/g, ""));
+
+            function updateUI() {
+                countEl.textContent = quantity;
+
+                minus.disabled = quantity === 1;
+                plus.disabled = quantity === 10;
+            }
+
+            minus.addEventListener("click", () => {
+                if (minus.disabled) return;
+
+                quantity--;
+                updateUI();
+            });
+
+            plus.addEventListener("click", () => {
+                if (plus.disabled) return;
+
+                quantity++;
+                updateUI();
+            });
+
+            addBtn.addEventListener("click", () => {
+                if (isProcessing) return;
+
+                isProcessing = true;
+                addBtn.disabled = true;
+
+                // NEW — loading feedback
+                addBtn.dataset.originalText = addBtn.textContent;
+                addBtn.textContent = "Adding...";
+
+                const total = quantity * price;
+
+                toast.classList.add("show");
+                clearTimeout(toastTimer);
+
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove("show");
+
+                    // restore button
+                    addBtn.textContent = addBtn.dataset.originalText;
+                    addBtn.disabled = false;
+                    isProcessing = false;
+
+                }, 2000);
+
+                console.table({
+                    product: productName,
+                    quantity: quantity,
+                    price: price,
+                    total: total
+                });
+            });
+
+            updateUI();
+
+            addBtn.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    addBtn.click();
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
