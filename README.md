@@ -1,4 +1,4 @@
-# DVC Internship Assessment – Nidhi Shishupal
+# DVC – Nidhi Shishupal
 
 This repository contains solutions for the Web Development Technical Assessment.
 Each question is implemented separately so it can run independently.
